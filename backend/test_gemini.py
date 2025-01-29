@@ -24,7 +24,7 @@ def send_message_to_gemini(message):
         response = requests.post(url, headers=headers, json=data)
         response_json = response.json()
         
-        print(f"Raw response: {response_json}")  # Debug log
+        # print(f"Raw response: {response_json}")  # Debug log
         
         return {
             "response": response_json.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "No response")
@@ -40,4 +40,8 @@ if __name__ == "__main__":
         if test_message.lower() == 'exit':
             break
         result = send_message_to_gemini(test_message)
-        print(f"Result: {result}\n")
+        # แสดงเฉพาะค่า response
+        if "response" in result:
+            print(f"Result: {result['response']}\n")
+        else:
+            print(f"Error: {result.get('error', 'Unknown error')}\n")
