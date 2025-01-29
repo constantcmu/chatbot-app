@@ -37,10 +37,55 @@
 
     <script type="module">
         import config from './config/config.js';
-        import { formatResponse } from './js/formatResponse.js';
         
         // Use API key from config
         const API_KEY = config.GEMINI_API_KEY;
+
+        // Utility function for escaping HTML to prevent XSS
+        const escapeHTML = str => str.replace(/[&<>"']/g, 
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[tag]));
+
+        function formatResponse(text) {
+            // ตัดเครื่องหมาย ** ออกก่อนการ escape HTML
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '$1');
+            
+            // ป้องกัน XSS
+            formatted = escapeHTML(formatted);
+
+            // จัดการกับ lists และการเว้นบรรทัด
+            const hasNumberedList = /^\d+\.\s+/m.test(formatted);
+            const hasBulletList = /^[-*]\s+/m.test(formatted);
+
+            if (hasNumberedList || hasBulletList) {
+                formatted = formatted
+                    .split('\n')
+                    .map(line => {
+                        if (/^\d+\.\s+/.test(line)) {
+                            return line.replace(/^\d+\.\s+(.+)/, '<li>$1</li>');
+                        }
+                        if (/^[-*]\s+/.test(line)) {
+                            return line.replace(/^[-*]\s+(.+)/, '<li>$1</li>');
+                        }
+                        return line;
+                    })
+                    .join('\n');
+
+                formatted = `<ul>${formatted}</ul>`;
+            }
+
+            // จัดการกับการขึ้นบรรทัดใหม่
+            formatted = formatted
+                .replace(/\n{2,}/g, '</div><div class="paragraph">') // ย่อหน้าใหม่
+                .replace(/\n/g, '<br>'); // ขึ้นบรรทัดใหม่
+
+            return `<div class="formatted-response"><div class="paragraph">${formatted}</div></div>`;
+        }
 
         async function sendMessageToGemini(message) {
             try {
@@ -123,8 +168,12 @@
         // Add Enter key support
         document.getElementById('testMessage').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                testGeminiAPI();
+            testGeminiAPI();
             }
+        });
+        // Add click event listener to the Send button
+        document.getElementById('sendButton').addEventListener('click', function() {
+            testGeminiAPI();
         });
     </script>
 </body>
