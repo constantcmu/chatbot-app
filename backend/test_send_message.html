@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gemini Message</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 8px;
+        }
+        #response {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-height: 100px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Test Gemini API Message</h2>
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Enter your message">
+            <button onclick="sendTestMessage()">Send</button>
+        </div>
+        <div id="response">Response will appear here...</div>
+    </div>
+
+    <script>
+        async function sendTestMessage() {
+            const message = document.getElementById('messageInput').value;
+            const responseDiv = document.getElementById('response');
+            
+            responseDiv.textContent = 'Sending message...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    responseDiv.textContent = `Error: ${data.error}`;
+                } else {
+                    responseDiv.textContent = `Response: ${data.response}`;
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

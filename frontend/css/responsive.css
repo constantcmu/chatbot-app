@@ -1,0 +1,34 @@
+/***********************************************
+ * This file contains styles that ensure the 
+ * application is responsive, adjusting the 
+ * layout for different screen sizes, particularly 
+ * for the Sidebar.
+ ***********************************************/
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Hide sidebar on mobile */
+    }
+
+    .sidebar-toggle {
+        display: block; /* Show toggle button */
+    }
+
+    .main-content {
+        margin-left: 0; /* Full width for main content */
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        display: block; /* Show sidebar on larger screens */
+    }
+
+    .sidebar-toggle {
+        display: none; /* Hide toggle button */
+    }
+
+    .main-content {
+        margin-left: 250px; /* Space for sidebar */
+    }
+}
