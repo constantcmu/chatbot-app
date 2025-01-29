@@ -3,79 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Gemini API Direct</title>
+    <title>AI Chat Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono&family=Open+Sans:wght@400;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --font-primary: 'Inter', sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
+            --font-content: 'Open Sans', 'Sarabun', sans-serif;
+            --font-thai: 'Sarabun', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-primary);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            min-height: 100vh;
+        }
         .container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            color: #1a1f36;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
         }
         .test-area {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            background: #f8fafd;
+            padding: 12px;
+            border-radius: 12px;
         }
         #testMessage {
             flex: 1;
-            padding: 10px;
+            padding: 14px;
             font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
+            border: 2px solid #e5e9f2;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: var(--font-content);  /* เปลี่ยนจาก var(--font-primary) */
+        }
+
+        /* เพิ่ม style สำหรับ input ภาษาไทย */
+        #testMessage:lang(th),
+        #testMessage::placeholder:lang(th) {
+            font-family: var(--font-thai);
+            line-height: 1.6;
+        }
+
+        #testMessage::placeholder {
+            color: #9ca3af;
+            font-family: var(--font-content);
+        }
+
+        #testMessage:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         #sendButton {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 14px 28px;
+            background: #6366f1;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-primary);
         }
         #sendButton:hover {
-            background-color: #45a049;
+            background: #4f46e5;
+            transform: translateY(-1px);
         }
         .response-area {
             margin-top: 20px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e5e9f2;
             min-height: 150px;
-            background-color: #f9f9f9;
+            transition: all 0.3s ease;
         }
         .status {
-            color: #666;
-            font-style: italic;
+            color: #6b7280;
+            font-style: normal;
+            font-size: 14px;
+            font-family: var(--font-primary);
         }
         .error {
-            color: #ff0000;
+            color: #ef4444;
+            font-size: 14px;
+            font-family: var(--font-primary);
         }
         .message-box {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: var(--font-content);
         }
         .user-message {
-            background-color: #e3f2fd;
-            border: 1px solid #bbdefb;
+            background: #f3f4f6;
+            border-left: 4px solid #6366f1;
         }
         .bot-message {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background: #ffffff;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            white-space: pre-wrap;
+            line-height: 1.4;  /* ลดจาก 1.6 */
+        }
+        .message-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-family: var(--font-primary);
+            font-weight: 600;
+        }
+        .formatted-response {
+            font-size: 15px;
+            font-family: var(--font-content);
+            line-height: 1.5;
+        }
+        .formatted-response ul {
+            margin: 8px 0;     /* ลดจาก 10px */
+            padding-left: 20px;
+        }
+        .formatted-response li {
+            margin: 4px 0;     /* ลดจาก 8px */
+        }
+        .formatted-response p {
+            margin: 8px 0;     /* ลดจาก 12px */
+        }
+        .formatted-response pre,
+        .formatted-response code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        /* สำหรับเนื้อหาภาษาไทย */
+        .formatted-response:lang(th) {
+            font-family: var(--font-thai);
+            line-height: 1.6;  /* เพิ่มความสูงของบรรทัดสำหรับภาษาไทย */
+        }
+        /* สำหรับข้อความภาษาไทยใน message box */
+        .message-box:lang(th) {
+            font-family: var(--font-thai);
+            line-height: 1.6;
         }
     </style>
+    <!-- <script src="test_send_gemini.js"></script> -->
 </head>
 <body>
     <div class="container">
-        <h1>Test Gemini API Direct</h1>
+        <h1>AI Chat Assistant</h1>
         <div class="test-area">
             <div class="input-group">
                 <input type="text" id="testMessage" 
-                       placeholder="Enter test message here...">
-                <button id="sendButton" onclick="testGeminiAPI()">Test Send</button>
+                       placeholder="พิมพ์ข้อความของคุณที่นี่..." 
+                       lang="th">
+                <button id="sendButton" onclick="testGeminiAPI()">ส่งข้อความ</button>
             </div>
             <div id="responseArea" class="response-area">
                 Response will appear here...
@@ -84,6 +185,62 @@
     </div>
 
     <script>
+        // Add your Gemini API key here
+        const API_KEY = "AIzaSyAyfwWfZ12UOmazQDr2-7qbdrbVlPV_h5E";
+
+        async function sendMessageToGemini(message) {
+            try {
+                console.log(`Sending message: ${message}`);  // Debug log
+                
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: message }]
+                        }]
+                    })
+                });
+
+                const responseJson = await response.json();
+                
+                // console.log('Raw response:', responseJson);  // Debug log
+                
+                return {
+                    response: responseJson?.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
+                };
+                
+            } catch (error) {
+                console.error(`Error in sendMessageToGemini: ${error}`);
+                return { error: error.message };
+            }
+        }
+
+        function formatResponse(text) {
+            // แทนที่การขึ้นบรรทัดใหม่ซ้ำๆ ด้วยการขึ้นบรรทัดเดียว
+            let formatted = text.replace(/\n\s*\n/g, '\n');
+            
+            // แทนที่การขึ้นบรรทัดใหม่ด้วย <br>
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            // จัดการกับหัวข้อย่อยที่มีเลขข้อ
+            formatted = formatted.replace(/(\d+\.)([^\n]+)/g, '<li>$2</li>');
+            
+            // จัดการกับหัวข้อย่อยที่มีเครื่องหมาย - หรือ *
+            formatted = formatted.replace(/[-*]([^\n]+)/g, '<li>$1</li>');
+            
+            // ถ้ามี list items ให้ครอบด้วย ul
+            if (formatted.includes('<li>')) {
+                formatted = '<ul>' + formatted + '</ul>';
+            }
+            
+            return `<div class="formatted-response">${formatted}</div>`;
+        }
+
         async function testGeminiAPI() {
             const messageInput = document.getElementById('testMessage');
             const responseArea = document.getElementById('responseArea');
@@ -94,21 +251,13 @@
                 return;
             }
 
-            responseArea.innerHTML = '<span class="status">Sending message to Gemini API...</span>';
+            responseArea.innerHTML = '<span class="status">Processing...</span>';
 
             try {
-                const response = await fetch('http://localhost:8000/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-
-                const data = await response.json();
+                const result = await sendMessageToGemini(message);
                 
-                if (data.error) {
-                    responseArea.innerHTML = `<span class="error">Error: ${data.error}</span>`;
+                if (result.error) {
+                    responseArea.innerHTML = `<span class="error">Error: ${result.error}</span>`;
                 } else {
                     responseArea.innerHTML = `
                         <div class="message-box user-message">
@@ -116,16 +265,15 @@
                             ${message}
                         </div>
                         <div class="message-box bot-message">
-                            <strong>Response from Gemini:</strong><br>
-                            ${data.response}
+                            <strong>Response:</strong><br>
+                            ${formatResponse(result.response)}
                         </div>`;
                 }
-                
-                messageInput.value = '';  // Clear input after sending
-                
             } catch (error) {
                 responseArea.innerHTML = `<span class="error">Error: ${error.message}</span>`;
             }
+            
+            messageInput.value = '';
         }
 
         // Add Enter key support

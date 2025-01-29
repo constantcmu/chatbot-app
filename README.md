@@ -1,10 +1,10 @@
 # README.md
 
-# Chatbot Application
+# แอพพลิเคชั่นแชทบอท AI
 
-This project is a web application that consists of a backend server built with Python using Starlette and a frontend developed with HTML, CSS, and JavaScript. The application serves as a chatbot interface that connects to the OpenAI API.
+แอพพลิเคชั่นนี้เป็นระบบแชทบอทที่ใช้ Gemini API จาก Google สำหรับการประมวลผลภาษาธรรมชาติ
 
-## Project Structure
+## โครงสร้างโปรเจค
 
 ```
 chatbot-app
@@ -27,38 +27,38 @@ chatbot-app
 └── .gitignore                # Specifies files to be ignored by Git
 ```
 
-## Setup Instructions
+## คำแนะนำในการตั้งค่า
 
-1. Clone the repository:
+1. โคลน repository:
    ```
    git clone <repository-url>
    cd chatbot-app
    ```
 
-2. Set up the backend:
-   - Navigate to the `backend` directory.
-   - Install the required dependencies:
+2. ตั้งค่า backend:
+   - ไปที่ไดเรกทอรี `backend`
+   - ติดตั้ง dependencies ที่ต้องการ:
      ```
      pip install -r requirements.txt
      ```
-   - Create a `.env` file and add your OpenAI API key:
+   - สร้างไฟล์ `.env` และเพิ่ม OpenAI API key ของคุณ:
      ```
      OPENAI_API_KEY=your_api_key_here
      ```
 
-3. Run the backend server:
+3. รัน backend server:
    ```
    python app.py
    ```
 
-4. Set up the frontend:
-   - Open `index.html` in your web browser to view the application.
+4. ตั้งค่า frontend:
+   - เปิด `index.html` ในเว็บเบราว์เซอร์ของคุณเพื่อดูแอพพลิเคชั่น
 
-## Usage
+## การใช้งาน
 
-- The chatbot interface allows users to interact with the chatbot powered by the OpenAI API.
-- The sidebar can be toggled on mobile devices for better accessibility.
+- อินเตอร์เฟซแชทบอทช่วยให้ผู้ใช้สามารถโต้ตอบกับแชทบอทที่ขับเคลื่อนโดย Gemini API
+- หน้าเว็บรองรับการแสดงผลบนอุปกรณ์ทุกขนาดหน้าจอ
 
-## License
+## หมายเหตุ
 
-This project is licensed under the MIT License.
+โปรเจคนี้เป็นส่วนหนึ่งของการเรียนรู้และพัฒนาทักษะการเขียนโปรแกรม ไม่ได้มีการกำหนดใบอนุญาตการใช้งานใดๆ
