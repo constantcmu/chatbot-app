@@ -233,7 +233,13 @@ h1 {
     position: relative;
 }
 
-.formatted-response .indented::before {
+.formatted-response .indented-twice {
+    padding-left: calc(var(--space-40) * 2);
+    position: relative;
+}
+
+.formatted-response .indented::before,
+.formatted-response .indented-twice::before {
     content: '';
     position: absolute;
     left: var(--space-20);
@@ -242,6 +248,10 @@ h1 {
     height: 1px;
     background: var(--color-text-secondary);
     opacity: 0.5;
+}
+
+.formatted-response .indented-twice::before {
+    left: calc(var(--space-20) + var(--space-40));
 }
 
 /* History Section Styles */
@@ -439,6 +449,36 @@ h1 {
 .history-list::-webkit-scrollbar-thumb:hover,
 .response-area::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-secondary);
+}
+
+/* MathML Styles */
+math {
+    font-size: 1.1em;
+    font-family: "Latin Modern Math", "STIX Two Math", serif;
+}
+
+math[display="block"] {
+    display: block;
+    margin: var(--space-16) 0;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+math[display="inline"] {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 var(--space-2);
+}
+
+/* Fallback for browsers without MathML support */
+math:not(:defined) {
+    display: inline-block;
+    background-color: var(--color-background);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    white-space: pre;
 }
 
 /* ...rest of existing styles... */
