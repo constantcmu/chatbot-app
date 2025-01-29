@@ -9,29 +9,25 @@ const escapeHTML = str => str.replace(/[&<>"']/g,
     }[tag]));
 
 export function formatResponse(text) {
-    // ตัด ** ออกก่อนทำอย่างอื่น
+    // ตัด ** ออก
     let formatted = text.replace(/\*\*([^*]+)\*\*/g, '$1');
-
+    
     // ป้องกัน XSS
     formatted = escapeHTML(formatted);
 
-    // แยกข้อความเป็นบรรทัดและจัดการแต่ละบรรทัด
+    // แยกข้อความเป็นบรรทัด
     formatted = formatted.split('\n').map(line => {
-        // ตรวจสอบและจัดการ numbered lists
-        if (/^\d+\.\s+/.test(line)) {
-            return line.replace(/^\d+\.\s+(.+)/, '<li>$1</li>');
+        const trimmedLine = line.trim();
+        // จัดการหัวข้อย่อย
+        if (trimmedLine.startsWith('-') || trimmedLine.startsWith('**')) {
+            return `<div class="indented">${line.replace(/^[-*]\s+/, '')}</div>`;
         }
-        // ตรวจสอบและจัดการ bullet lists
-        if (/^[-*]\s+/.test(line)) {
-            return line.replace(/^[-*]\s+(.+)/, '<li>$1</li>');
+        // จัดการ numbered lists
+        if (/^\d+\.\s+/.test(trimmedLine)) {
+            return `<div class="indented">${line.replace(/^\d+\.\s+/, '')}</div>`;
         }
         return line;
     }).join('\n');
-
-    // ครอบ list items ด้วย ul เฉพาะส่วนที่เป็น list
-    if (formatted.includes('<li>')) {
-        formatted = formatted.replace(/(<li>.*<\/li>\n*)+/g, match => `<ul>${match}</ul>`);
-    }
 
     // จัดการกับการขึ้นบรรทัดใหม่
     formatted = formatted
