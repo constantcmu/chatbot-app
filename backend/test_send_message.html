@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <!-- <script src="test_send_gemini.js"></script> -->
-    <script id="MathJax-script" async 
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
             tex: {
@@ -20,9 +18,11 @@
             },
             options: {
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            
+            }
         };
     </script>
+    <script id="MathJax-script" async 
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="container" role="main">
@@ -47,8 +47,7 @@
                        aria-required="true"
                        lang="th">
                 <button id="sendButton" 
-                        aria-label="Send message"
-                        onclick="testGeminiAPI()">
+                        aria-label="Send message">
                     Send
                 </button>
             </div>
@@ -56,8 +55,7 @@
                  class="response-area" 
                  role="log" 
                  aria-live="polite"
-                 aria-atomic="true"
-                 style="opacity: 1; max-height: 20px; overflow-y: auto;">
+                 aria-atomic="true">
                 Response will appear here...
             </div>
         </div>

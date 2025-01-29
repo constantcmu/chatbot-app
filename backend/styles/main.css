@@ -155,7 +155,8 @@ h1 {
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    min-height: 150px;
+    min-height: 200px; /* เพิ่มความสูงขั้นต่ำ */
+    max-height: none;  /* ลบ max-height ที่จำกัดไว้ */
     transition: all 0.3s ease;
 }
 .status {
