@@ -1,0 +1,18 @@
+
+# Configuration
+/config/config.js
+
+# Dependencies
+/node_modules
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

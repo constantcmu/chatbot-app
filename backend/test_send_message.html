@@ -10,24 +10,37 @@
     <!-- <script src="test_send_gemini.js"></script> -->
 </head>
 <body>
-    <div class="container">
+    <div class="container" role="main">
         <h1>AI Chat Assistant</h1>
         <div class="test-area">
-            <div class="input-group">
+            <div class="input-group" role="group" aria-label="Chat input group">
                 <input type="text" id="testMessage" 
+                       aria-label="Input message"
                        placeholder="พิมพ์ข้อความของคุณที่นี่..." 
+                       aria-required="true"
                        lang="th">
-                <button id="sendButton" onclick="testGeminiAPI()">Send</button>
+                <button id="sendButton" 
+                        aria-label="Send message"
+                        onclick="testGeminiAPI()">
+                    Send
+                </button>
             </div>
-            <div id="responseArea" class="response-area">
+            <div id="responseArea" 
+                 class="response-area" 
+                 role="log" 
+                 aria-live="polite" 
+                 aria-atomic="true">
                 Response will appear here...
             </div>
         </div>
     </div>
 
-    <script>
-        // Add your Gemini API key here
-        const API_KEY = "AIzaSyAyfwWfZ12UOmazQDr2-7qbdrbVlPV_h5E";
+    <script type="module">
+        import config from './config/config.js';
+        import { formatResponse } from './js/formatResponse.js';
+        
+        // Use API key from config
+        const API_KEY = config.GEMINI_API_KEY;
 
         async function sendMessageToGemini(message) {
             try {
@@ -61,27 +74,6 @@
             }
         }
 
-        function formatResponse(text) {
-            // แทนที่การขึ้นบรรทัดใหม่ซ้ำๆ ด้วยการขึ้นบรรทัดเดียว
-            let formatted = text.replace(/\s*\n/g, '\n');  // แก้ Regular expression
-            
-            // แทนที่การขึ้นบรรทัดใหม่ด้วย <br>
-            // formatted = formatted.replace(/\n/g, '<br>');
-            
-            // // จัดการกับหัวข้อย่อยที่มีเลขข้อ
-            formatted = formatted.replace(/(\d+\.)([^]+)/g, '<li>$2</li>');
-            
-            // จัดการกับหัวข้อย่อยที่มีเครื่องหมาย - หรือ *
-            formatted = formatted.replace(/[-*]([^]+)/g, '<li>$1</li>');
-            
-            // ถ้ามี list items ให้ครอบด้วย ul
-            if (formatted.includes('<li>')) {
-                formatted = '<ul>' + formatted + '</ul>';
-            }
-            
-            return `<div class="formatted-response">${formatted}</div>`;
-        }
-
         async function testGeminiAPI() {
             const messageInput = document.getElementById('testMessage');
             const sendButton = document.getElementById('sendButton');
@@ -89,21 +81,22 @@
             const message = messageInput.value.trim();
 
             if (!message) {
-                responseArea.innerHTML = '<span class="error">Please enter a message</span>';
+                responseArea.innerHTML = '<span class="error" role="alert">Please enter a message</span>';
                 return;
             }
 
-            // Add loading state
+            // Add loading state with ARIA
             sendButton.disabled = true;
             sendButton.classList.add('loading');
             sendButton.textContent = 'Sending...';
-            responseArea.innerHTML = '<span class="status">Processing...</span>';
+            sendButton.setAttribute('aria-busy', 'true');
+            responseArea.innerHTML = '<span class="status" role="status">Processing...</span>';
 
             try {
                 const result = await sendMessageToGemini(message);
                 
                 if (result.error) {
-                    responseArea.innerHTML = `<span class="error">Error: ${result.error}</span>`;
+                    responseArea.innerHTML = `<span class="error" role="alert">Error: ${result.error}</span>`;
                 } else {
                     responseArea.innerHTML = `
                         <div class="message-box user-message" lang="th">
@@ -116,12 +109,13 @@
                         </div>`;
                 }
             } catch (error) {
-                responseArea.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+                responseArea.innerHTML = `<span class="error" role="alert">Error: ${error.message}</span>`;
             } finally {
-                // Reset button state
+                // Reset button state with ARIA
                 sendButton.disabled = false;
                 sendButton.classList.remove('loading');
                 sendButton.textContent = 'Send';
+                sendButton.removeAttribute('aria-busy');
                 messageInput.value = '';
             }
         }
