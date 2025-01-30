@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Equation Renderer</title>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <!-- MathJax -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* พื้นฐาน UI */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* สไตล์สำหรับสมการ */
+        .math-equation {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4a5568;
+            overflow-x: auto;
+        }
+
+        .math-inline {
+            padding: 0 5px;
+            background: #f1f3f5;
+            border-radius: 4px;
+        }
+
+        .math-display {
+            text-align: center;
+            padding: 20px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        /* ควบคุมการแสดงผล */
+        #input-area {
+            margin-bottom: 20px;
+        }
+
+        #equation-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        #render-button {
+            padding: 10px 20px;
+            background: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #render-button:hover {
+            background: #2d3748;
+        }
+
+        #output-area {
+            margin-top: 20px;
+        }
+
+        .renderer-toggle {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Math Equation Renderer</h1>
+        
+        <div id="input-area">
+            <div class="renderer-toggle">
+                <label>
+                    <input type="radio" name="renderer" value="mathjax" checked> MathJax
+                </label>
+                <label>
+                    <input type="radio" name="renderer" value="katex"> KaTeX
+                </label>
+            </div>
+            
+            <textarea id="equation-input" 
+                      rows="4" 
+                      placeholder="Enter LaTeX equation here... 
+Example: \[\int_0^\infty \frac{x^2}{(1+x^2)^2} dx\]"></textarea>
+            <button id="render-button" onclick="renderEquation()">Render</button>
+        </div>
+
+        <div id="output-area">
+            <div class="math-equation" id="equation-output"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRenderer = 'mathjax';
+
+        // สลับระหว่าง MathJax และ KaTeX
+        document.querySelectorAll('input[name="renderer"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                currentRenderer = e.target.value;
+                renderEquation();
+            });
+        });
+
+        async function renderEquation() {
+            const input = document.getElementById('equation-input').value;
+            const output = document.getElementById('equation-output');
+            
+            if (!input.trim()) {
+                output.innerHTML = '<i>Enter an equation to render</i>';
+                return;
+            }
+
+            try {
+                if (currentRenderer === 'katex') {
+                    renderWithKaTeX(input, output);
+                } else {
+                    await renderWithMathJax(input, output);
+                }
+            } catch (error) {
+                output.innerHTML = `<span style="color: red">Error: ${error.message}</span>`;
+            }
+        }
+
+        function renderWithKaTeX(input, output) {
+            // ตรวจสอบว่าเป็น display mode หรือ inline mode
+            const isDisplay = input.includes('\\[') || input.includes('$$');
+            const equation = input
+                .replace(/\\\[(.*?)\\\]/g, '$1')
+                .replace(/\$\$(.*?)\$\$/g, '$1')
+                .replace(/\\\((.*?)\\\)/g, '$1')
+                .replace(/\$(.*?)\$/g, '$1');
+
+            katex.render(equation, output, {
+                displayMode: isDisplay,
+                throwOnError: true
+            });
+        }
+
+        async function renderWithMathJax(input, output) {
+            output.innerHTML = input;
+            await MathJax.typesetPromise([output]);
+        }
+
+        // Format response helper
+        function formatMathResponse(text) {
+            // แทนที่ inline math
+            text = text.replace(/\$([^$]+)\$/g, '<span class="math-inline">\\($1\\)</span>');
+            
+            // แทนที่ display math
+            text = text.replace(/\$\$(.*?)\$\$/g, '<div class="math-display">\\[$1\\]</div>');
+            
+            return text;
+        }
+
+        // ตัวอย่างการใช้งาน
+        document.getElementById('equation-input').value = 
+            'Given the integral \\[\\int_0^\\infty \\frac{x^2}{(1+x^2)^2} dx\\]';
+        renderEquation();
+    </script>
+</div>
+</body>
+</html>
