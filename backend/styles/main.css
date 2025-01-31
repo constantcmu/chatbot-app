@@ -512,6 +512,54 @@ math[display="inline"] {
     margin: 0 var(--space-2);
 }
 
+/* สไตล์สำหรับสมการ */
+.math-equation {
+    margin: var(--space-20) 0;
+    padding: var(--space-16);
+    background: #f8f9fa;
+    border-radius: var(--radius-lg);
+    border-left: 4px solid #4a5568;
+    overflow-x: auto;
+    font-size: 1.1em; /* เพิ่มขนาดฟอนต์มาตรฐานสำหรับสมการ */
+}
+
+.math-inline {
+    padding: 0 var(--space-4);
+    background: #f1f3f5;
+    border-radius: var(--radius-sm);
+    font-size: 1em; /* ปรับขนาดฟอนต์สำหรับ inline math */
+}
+
+.math-display {
+    text-align: center;
+    padding: var(--space-20);
+    margin: var(--space-16) 0;
+    background: #f8f9fa;
+    border-radius: var(--radius-lg);
+    font-size: 1.2em; /* ปรับขนาดฟอนต์สำหรับ display math */
+}
+
+/* ปรับขนาด MathJax ให้สมดุลในทุกส่วน */
+.history-item .MathJax,
+.current-response .MathJax {
+    font-size: 115% !important; /* ปรับขนาดฟอนต์ MathJax ทั้งหมด */
+}
+
+.history-item .MathJax[display="true"],
+.current-response .MathJax[display="true"] {
+    font-size: 120% !important; /* ปรับขนาดสำหรับ display mode */
+}
+
+/* แก้ไขขนาดฟอนต์ใน formatted response */
+.formatted-response {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.formatted-response .MathJax {
+    margin: var(--space-4) 0;
+}
+
 /* Fallback for browsers without MathML support */
 math:not(:defined) {
     display: inline-block;
@@ -521,6 +569,62 @@ math:not(:defined) {
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
     white-space: pre;
+}
+
+/* Chemical Equation Styles */
+.formatted-response sub {
+    font-size: 0.75em;
+    line-height: 0;
+    vertical-align: baseline;
+    position: relative;
+    bottom: -0.25em;
+    margin: 0 0.1em;
+}
+
+.formatted-response .chemical-equation {
+    font-family: var(--font-mono);
+    padding: var(--space-8) var(--space-16);
+    background: var(--color-background-secondary);
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+/* ปรับขนาดสัญลักษณ์ลูกศร */
+.formatted-response .arrow-symbol {
+    font-size: 1.2em;
+    margin: 0 var(--space-4);
+    vertical-align: middle;
+}
+
+/* Spectroscopy Styles */
+.formatted-response em {
+    font-style: italic;
+    color: var(--color-text);
+}
+
+.formatted-response sup,
+.formatted-response sub {
+    font-size: 0.75em;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.formatted-response sup {
+    top: -0.5em;
+}
+
+.formatted-response sub {
+    bottom: -0.25em;
+}
+
+.formatted-response .spectral-data {
+    font-family: var(--font-mono);
+    background: var(--color-background-secondary);
+    padding: var(--space-8) var(--space-16);
+    border-radius: var(--radius-md);
+    margin: var(--space-8) 0;
 }
 
 /* ...rest of existing styles... */

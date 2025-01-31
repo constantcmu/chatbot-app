@@ -75,6 +75,76 @@ const restoreMath = text => {
     return text;
 };
 
+// เพิ่มฟังก์ชันสำหรับจัดการตัวเลขพิเศษ (subscript/superscript)
+const processSpecialNumbers = (text) => {
+    // แปลงตัวเลขเป็น subscript
+    const subscriptMap = {
+        '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+        '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
+    };
+
+    // แปลงตัวเลขเป็น superscript
+    const superscriptMap = {
+        '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+        '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+        '-': '⁻', '+': '⁺'
+    };
+
+    // แปลง NMR notation
+    text = text.replace(/([¹²³])?([⁰¹²³⁴⁵⁶⁷⁸⁹]{0,2}[HC])/g, '<sup>$1</sup>$2');
+    
+    // แปลงตัวเลขหลังสัญลักษณ์เคมีให้เป็นตัวห้อย
+    text = text.replace(/([A-Z][a-z]?)(\d+)/g, (match, symbol, numbers) => {
+        return symbol + numbers.split('').map(n => subscriptMap[n] || n).join('');
+    });
+
+    // แปลง IR units (cm⁻¹)
+    text = text.replace(/cm-(\d+)/g, (match, number) => {
+        return 'cm' + '⁻' + number.split('').map(n => superscriptMap[n] || n).join('');
+    });
+
+    // แปลง NMR coupling constants and chemical shifts
+    text = text.replace(/\b(\d+(?:\.\d+)?)\s*ppm/g, '$1 δ');
+    text = text.replace(/([JH])\s*=\s*(\d+(?:\.\d+)?)/g, '$1 = $2 Hz');
+
+    return text;
+};
+
+// เพิ่มฟังก์ชันสำหรับจัดการสัญลักษณ์เคมีและตัวห้อย
+const processChemicalEquations = (text) => {
+    // รักษาแท็ก sub ที่มีอยู่แล้ว
+    text = text.replace(/&lt;sub&gt;(.*?)&lt;\/sub&gt;/g, '<sub>$1</sub>');
+    
+    // แปลงตัวเลขหลังสัญลักษณ์เคมีให้เป็นตัวห้อย (เช่น H2, N2)
+    text = text.replace(/([A-Z][a-z]?)(\d+)/g, '$1<sub>$2</sub>');
+    
+    // แปลงสถานะในวงเล็บ (g), (l), (s), (aq)
+    text = text.replace(/\((g|l|s|aq)\)/g, '<sub>($1)</sub>');
+    
+    // แปลงสัญลักษณ์ทางเคมี
+    const chemicalSymbols = {
+        '⇌': '⇌',
+        '->': '→',
+        '<->': '↔',
+        '-->': '→',
+        '<--': '←',
+        '=>': '⇒',
+        '<=': '⇐',
+        '<=>': '⇔'
+    };
+    
+    for (const [symbol, replacement] of Object.entries(chemicalSymbols)) {
+        text = text.replace(new RegExp(symbol, 'g'), ` ${replacement} `);
+    }
+    
+    // เพิ่มการจัดการกับ NMR และ IR data
+    text = text.replace(/(¹H|¹³C)\s+NMR/g, '<em>$1</em> NMR');
+    text = text.replace(/\b(singlet|doublet|triplet|quartet|multiplet)\b/g, '<em>$1</em>');
+    text = text.replace(/\b(\d+(?:\.\d+)?)\s*H\b/g, '$1<em>H</em>');
+
+    return text;
+};
+
 export function formatResponse(text) {
     if (!text?.trim()) return '';
     
@@ -85,11 +155,17 @@ export function formatResponse(text) {
             .replace(/\r\n/g, '\n')
             .trim();
         
+        // Process special numbers before HTML escaping
+        formatted = processSpecialNumbers(formatted);
+        
         // Preserve math expressions before HTML escaping
         formatted = processMath(formatted);
         
         // Escape HTML except for math tokens
         formatted = escapeHTML(formatted);
+        
+        // Process chemical equations and subscripts
+        formatted = processChemicalEquations(formatted);
         
         // Process lines
         formatted = formatted

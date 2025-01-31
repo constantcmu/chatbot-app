@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <!-- <script src="test_send_gemini.js"></script> -->
+    
     <script>
-        // window.MathJax = {
-        //     tex: {
-        //         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        //         displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        //         processEscapes: true
-        //     },
-        //     options: {
-        //         skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-        //     }
-        // };
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
     </script>
     <script id="MathJax-script" async 
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -141,7 +141,7 @@
         }
 
         // เปลี่ยนวิธีการอัพเดท display
-        function updateDisplay(message, response) {
+        async function updateDisplay(message, response) {
             const historyContainer = document.getElementById('historyContainer');
             
             // สร้าง message item ใหม่
@@ -161,6 +161,11 @@
             
             // เพิ่มข้อความใหม่ไว้ที่ส่วนบนของ history
             historyContainer.insertBefore(newMessageItem, historyContainer.firstChild);
+            
+            // Trigger MathJax typesetting
+            if (typeof MathJax !== 'undefined') {
+                await MathJax.typesetPromise([newMessageItem]);
+            }
             
             // Scroll to the newest message
             newMessageItem.scrollIntoView({ behavior: 'smooth', block: 'end' });
