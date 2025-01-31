@@ -112,7 +112,7 @@
             sendButton.disabled = true;
             sendButton.classList.add('loading');
             sendButton.textContent = 'Sending...';
-            currentResponse.innerHTML = '<span class="status" role="status">Processing...</span>';
+            currentResponse.innerHTML = '<span class="status" role="status">Processing</span>';
 
             try {
                 const result = await sendMessageToGemini(message);

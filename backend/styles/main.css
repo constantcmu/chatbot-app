@@ -190,7 +190,31 @@ h1 {
     font-style: normal;
     font-size: 14px;
     font-family: var(--font-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
+
+.status::after {
+    content: '...';
+    display: inline-block;
+    animation: dots 1.4s infinite;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40%, 60% {
+        content: '..';
+    }
+    80%, 100% {
+        content: '...';
+    }
+}
+
 .error {
     color: var(--color-error);
     font-size: 14px;
