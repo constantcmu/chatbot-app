@@ -30,22 +30,22 @@
 ```
 chatbot-app
 ├── backend
-│   ├── app.py                # Main entry point for the backend application
-│   ├── requirements.txt      # Lists dependencies for the backend
-│   └── .env                  # Contains environment variables (API keys)
+│   ├── app.py                # จุดเริ่มต้นหลักสำหรับแอปพลิเคชัน backend
+│   ├── requirements.txt      # รายการ dependencies สำหรับ backend
+│   └── .env                  # ไฟล์ที่เก็บ environment variables (API keys)
 ├── frontend
-│   ├── index.html            # Main HTML file for the frontend
+│   ├── index.html            # ไฟล์ HTML หลักสำหรับ frontend
 │   ├── css
-│   │   ├── style.css         # Main styles for the frontend
-│   │   └── responsive.css     # Responsive styles for different screen sizes
+│   │   ├── style.css         # สไตล์หลักสำหรับ frontend
+│   │   └── responsive.css    # สไตล์ responsive สำหรับขนาดหน้าจอต่างๆ
 │   ├── js
-│   │   ├── app.js            # Main JavaScript logic for the frontend
-│   │   ├── chat.js           # Manages chatbot functionality
-│   │   └── sidebar.js        # Handles sidebar functionality
+│   │   ├── app.js            # JavaScript หลักสำหรับ frontend
+│   │   ├── chat.js           # จัดการฟังก์ชันการทำงานของแชทบอท
+│   │   └── sidebar.js        # จัดการฟังก์ชันการทำงานของ sidebar
 │   └── assets
-│       └── icons             # Directory for icon files
-├── README.md                 # Documentation for the project
-└── .gitignore                # Specifies files to be ignored by Git
+│       └── icons             # ไดเรกทอรีสำหรับไฟล์ไอคอน
+├── README.md                 # เอกสารสำหรับโปรเจค
+└── .gitignore                # ระบุไฟล์ที่ต้องการให้ Git มองข้าม
 ```
 
 ## คำแนะนำในการตั้งค่า
